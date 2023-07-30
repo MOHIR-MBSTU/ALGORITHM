@@ -1,0 +1,126 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define fastread  ios_base::sync_with_stdio(false),cin.tie(NULL)
+#define pb push_back
+#define ha cout<<"YES\n"
+#define na cout<<"NO\n"
+#define endl "\n"
+#define co(x) cout<<x<<'\n'
+#define f(n) for(int i=0;i<n;i++)
+#define srt(v) sort(v.begin(),v.end())
+#define mod 1000000007
+#define INF 1e18
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+typedef pair<int, int> pii;
+tree<pii, null_type, less<pii>, rb_tree_tag, tree_order_statistics_node_update> T;
+ll bigmod(ll x, ll y, ll p)
+{
+    ll res = 1;
+    x = x % p;
+    if (x == 0)return 0;
+    while (y > 0)
+    {
+        if (y & 1)
+            res = (res * x) % p;
+        y = y >> 1;
+        x = (x * x) % p;
+    }
+    return res;
+}
+struct fun
+{
+    ll u, cst, chk;
+    bool operator <(const fun &it)const
+    {
+        return cst > it.cst;
+    }
+};
+ll power(ll a, ll b)
+{
+    ll c = 1;
+    while (b--)c *= a;
+    return c;
+}
+
+int fx[] = { +0, +0, +1, -1, -1, +1, -1, +1};
+int fy[] = { -1, +1, +0, +0, +1, +1, -1, -1};
+vector<ll>v(30003);
+vector<int>mp(1000003);
+int sq;
+bool mohir(pair<pair<int, int>, int>a, pair<pair<int, int>, int>b)
+{
+    if ((a.first.first / sq) == (b.first.first / sq))
+        return a.first.second < b.first.second;
+    return (a.first.first / sq) < (b.first.first / sq);
+}
+void testcase()
+{
+    int n; cin >> n;
+    for (int i = 1; i <= n; i++)
+    {
+        cin >> v[i];
+    }
+    int query;
+    cin >> query;
+    vector<pair<pair<int, int>, int>>vp;
+    int i = 1;
+    vector<int>ans(query + 2, 0);
+    while (query--)
+    {
+        int l, r;
+        cin >> l >> r;
+        vp.pb({{l, r}, i});
+        i++;
+    }
+    sq = sqrt(n);
+    sort(vp.begin(), vp.end(), mohir);
+    int left = 0;
+    int right = 0;
+    int cur_ans = 0;
+    for (int i = 0; i < vp.size(); i++)
+    {
+        int l = vp[i].first.first;
+        int r = vp[i].first.second;
+        int id = vp[i].second;
+        while (l < left)
+        {
+            left--;
+            if (mp[v[left]] == 0)cur_ans++;
+            mp[v[left]]++;
+        }
+        while (l > left)
+        {
+            mp[v[left]]--;
+            if (mp[v[left]] == 0)cur_ans--;
+            left++;
+        }
+        while (right < r)
+        {
+            right++;
+            if (mp[v[right]] == 0)cur_ans++;
+            mp[v[right]]++;
+        }
+        while (r < right)
+        {
+            mp[v[right]]--;
+            if (mp[v[right]] == 0)cur_ans--;
+            right--;
+        }
+        ans[id] = cur_ans;
+    }
+    for (int i = 1; i <= vp.size(); i++)
+    {
+        cout << ans[i] << endl;
+    }
+
+}
+int main()
+{
+    fastread;
+    int test = 1;
+    while (test--)testcase();
+    return 0;
+}
